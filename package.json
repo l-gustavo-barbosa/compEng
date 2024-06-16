@@ -1,0 +1,26 @@
+{
+  "name": "p3",
+  "version": "1.0.0",
+  "description": "*",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.2",
+    "@types/pg": "^8.11.6"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^3.0.0",
+    "pg": "^8.12.0"
+  }
+}
