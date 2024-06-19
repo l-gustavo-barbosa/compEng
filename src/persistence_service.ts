@@ -14,9 +14,6 @@ import {UserDAO, UserDAOPG, UserDAOMdb, UserDAOMongo} from "./models/dao";
 import ticketController from "./controller/ticketController";
 import ticket from "./models/ticket";
 
-
-
-
 /* Configuração para leitura de parâmetros em requisição do tipo post em form */
 app.use(bodyParser.urlencoded({extended: true}));
 /* Habilitação de requisições partindo de outras aplicações */
