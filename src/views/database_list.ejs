@@ -1,9 +1,25 @@
 <%# The line bellow loads the entire contens of header.ejs%>
 <%-include('base_header') -%>
 
-<p> postgre_database: <%=service_response %> </p>
-<p> mongodb_database: <%=service_response %> </p>
-<p> mariadb_database: <%=service_response %> </p>
+
+<h2>MariaDB</h2>
+<ul>
+    <% service_response[0].forEach(ticket => { %>
+        <li><%= ticket.type %>, <%= ticket.description %></li>
+    <% }); %>
+</ul>
+<h2>Postgre</h2>
+<ul>
+    <% service_response[1].forEach(ticket => { %>
+        <li><%= ticket.type %>, <%= ticket.description %></li>
+    <% }); %>
+</ul>
+<h2>Mongo</h2>
+<ul>
+    <% service_response[2].forEach(ticket => { %>
+        <li><%= ticket.type %>, <%= ticket.description %></li>
+    <% }); %>
+</ul>
 
 <%# Includes the entire contents of footer.ejs %>
 <%- include('base_footer') -%>

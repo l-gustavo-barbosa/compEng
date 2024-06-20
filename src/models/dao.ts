@@ -28,7 +28,7 @@ class UserDAOPG implements UserDAO {
     insertLog.info("Postgre Database successfully connected.");
     // Executing a query
     const insertQuery =
-      "INSERT INTO tickets(types, description) VALUES ($1, $2)"; //alt tipos to types, need to rename in postgreSQL database
+      "INSERT INTO tickets(type, description) VALUES ($1, $2)"; //alt tipos to types, need to rename in postgreSQL database
     if (data.description === "" || data.type === "") {
       console.log("Error: Description cannot be empty");
       insertLog.error("Error: Description cannot be empty");
@@ -49,6 +49,23 @@ class UserDAOPG implements UserDAO {
         });
     }
   }
+  async getTickets() {
+
+    const client = new Client(this.dbConfig);
+    client.connect()
+    let response:any[] = [];
+    try {
+        let data = await client.query('SELECT type, description FROM tickets');
+        
+        response = data.rows;
+
+    } finally {
+        await client.end(); // Make sure to close the connection
+        
+    }
+    
+    return response; // Return the data
+}
 }
 
 //Mongo
@@ -87,7 +104,22 @@ class UserDAOMongo implements UserDAO {
       await client.close();
     }
   }
+  async getTickets() {
+    const client = new MongoClient(this.dbConfig.url);
+    const database = client.db(this.dbConfig.databaseName);
+    const collection = database.collection('tickets');
+    let response:any[] = [];
+    try {
+        response = await collection.find({}).toArray();
+        console.log(response)
+    } finally {
+        await client.close(); // Make sure to close the connection
+        
+    }
+    return response; // Return the data
 }
+}
+
 
 //Maria
 class UserDAOMdb implements UserDAO {
@@ -127,5 +159,18 @@ class UserDAOMdb implements UserDAO {
       insertLog.info("Connection closed");
     }
   }
+
+  async getTickets() {
+    const connection = await mariadb.createConnection(this.dbConfig);
+    let response:any[] = [];
+    try {
+        const rows = await connection.query('SELECT * FROM tickets');
+        response = rows as any[];
+    } finally {
+        await connection.end(); // Make sure to close the connection
+    }
+    return response; // Return the data
+}
+
 }
 export { UserDAO, UserDAOPG, UserDAOMongo, UserDAOMdb };

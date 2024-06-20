@@ -13,6 +13,7 @@ const bodyParser = require("body-parser");
 var axios = require("axios");
 import { AxiosResponse, AxiosError } from "axios";
 import Log from "./models/log";
+import { json } from "stream/consumers";
 
 const app = express();
 const port = 5003;
@@ -33,6 +34,7 @@ const insertLog = Log.getInstance();
 app.get("/", root_client_handler);
 app.post("/persist", persis_ticket_handler);
 app.get("/persist_form", persist_client_handler);
+app.get("/databases_list", list_handler);
 app.listen(port, listenHandler);
 
 /* Function to return text persistence interface */
@@ -86,6 +88,15 @@ async function persis_ticket_handler(req: any, res: any) {
         console.error("Error:", error.message);
       }
     });
+}
+
+async function list_handler(req:any, res:any){
+  await axios
+    .get("http://localhost:5000/list")
+    .then((response: AxiosResponse) => {
+      res.render("database_list.ejs", ({ service_response: response.data }));     
+    })
+  
 }
 
 /* Tratador para inicializar a aplicação (escutar as requisições)*/

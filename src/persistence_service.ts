@@ -24,6 +24,7 @@ app.use(cors({
 
 /* Service route creation . */
 app.get('/persistOur', persistence_handler);
+app.get('/listTickets', list_handler);
 /* Server execution */
 app.listen(port, listenHandler);
 
@@ -35,7 +36,17 @@ app.listen(port, listenHandler);
     let data = controller.insertTicket([req.query.type, req.query.description]);
     let user_dao: UserDAO = req.query.sgdb == 'PG' ? new UserDAOPG(): req.query.sgdb == 'MG' ? new UserDAOMongo() : new UserDAOMdb();
     await user_dao.insertTicket(data);
-    res.end('Data inserted.')
+    res.end('Data inserted.');
+}
+
+async function list_handler(req:any, res:any){
+    let user_maria: UserDAOMdb = new UserDAOMdb()
+    let user_pg: UserDAOPG = new UserDAOPG()
+    let user_mongo: UserDAOMongo = new UserDAOMongo()
+    let data = await user_maria.getTickets();
+    let data2 = await user_pg.getTickets();
+    let data3 = await user_mongo.getTickets();
+    res.send([data,data2,data3]);
 }
 
 function listenHandler(){
