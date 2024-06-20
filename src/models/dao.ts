@@ -23,19 +23,24 @@ class UserDAOPG implements UserDAO {
     console.log("Database successfully connected.");
     // Executing a query
     const insertQuery =
-      "INSERT INTO tickets(types, description) VALUES ($1, $2)";
-    client
-      .query(insertQuery, [data.type, data.description])
-      .then((result) => {
-        console.log("Data inserted successfully");
-      })
-      .catch((error) => {
-        console.error("Error executing query", error);
-      })
-      .finally(() => {
-        console.log("connection closed");
-        client.end();
-      });
+      "INSERT INTO tickets(types, description) VALUES ($1, $2)"; //alt tipos to types, need to rename in postgreSQL database
+    if (data.description === "" || data.type === "") {
+      console.log("Error: Description cannot be empty");
+      // function insertLog here
+    } else {
+      client
+        .query(insertQuery, [data.type, data.description])
+        .then((result) => {
+          console.log("Data inserted successfully");
+        })
+        .catch((error) => {
+          console.error("Error executing query", error);
+        })
+        .finally(() => {
+          console.log("connection closed");
+          client.end();
+        });
+    }
   }
 }
 
@@ -56,11 +61,16 @@ class UserDAOMdb implements UserDAO {
     const insertQuery = "INSERT INTO tickets(type, description) VALUES (?, ?)";
 
     try {
-      const result = await connection.query(insertQuery, [
-        data.type,
-        data.description,
-      ]);
-      console.log("Data inserted successfully", result);
+      if (data.description === '' || data.type === '') {
+        console.log("Error: Description cannot be empty");
+         // function insertLog here
+      } else {
+        const result = await connection.query(insertQuery, [
+          data.type,
+          data.description,
+        ]);
+        console.log("Data inserted successfully", result);
+      }
     } catch (error) {
       console.error("Error executing query", error);
     } finally {
@@ -81,14 +91,19 @@ class UserDAOMongo implements UserDAO {
     let data = { type: ticket.getType(), description: ticket.getDescription() };
 
     try {
-      await client.connect();
-      console.log("Database successfully connected.");
+      if (data.description === "" || data.type === "") {
+        console.log("Error: Description cannot be empty");
+         // function insertLog here
+      } else {
+        await client.connect();
+        console.log("Database successfully connected.");
 
-      const db = client.db(this.dbConfig.databaseName);
-      const collection = db.collection("tickets");
+        const db = client.db(this.dbConfig.databaseName);
+        const collection = db.collection("tickets");
 
-      const result = await collection.insertOne(data);
-      console.log("Data inserted successfully", result);
+        const result = await collection.insertOne(data);
+        console.log("Data inserted successfully", result);
+      }
     } catch (error) {
       console.error("Error executing query", error);
     } finally {
