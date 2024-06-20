@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+import Log from "./models/log";
 
 var cors = require('cors');
 const app = express();
 
 const port = 5000;
+
+const insertLog = Log.getInstance();
 
 /* Basic service endpoints: */
 const persistence_service_endpoint: string = 'http://localhost:5002/persistOur';
@@ -36,4 +39,5 @@ app.listen(port, listenHandler);
 
 function listenHandler(){
     console.log(`Listening port ${port}!`);
+    insertLog.info(`Api Gateway started.`)
 }

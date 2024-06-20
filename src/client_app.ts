@@ -12,6 +12,7 @@ const bodyParser = require("body-parser");
 /* module to generate requests to service gateway */
 var axios = require("axios");
 import { AxiosResponse, AxiosError } from "axios";
+import Log from "./models/log";
 
 const app = express();
 const port = 5003;
@@ -26,9 +27,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 /* Static files directory configuration .*/
 app.use(express.static("src/public"));
 
+const insertLog = Log.getInstance();
+
 //app.get('/addForm', addProjectHandlerForm);
 app.get("/", root_client_handler);
-app.post("/persist", persist_name_handler);
+app.post("/persist", persis_ticket_handler);
 app.get("/persist_form", persist_client_handler);
 app.listen(port, listenHandler);
 
@@ -41,8 +44,9 @@ function root_client_handler(req: any, res: any) {
   res.render("form_tickets.ejs");
 }
 
-/* function to perform text capitalization through web service */
-async function persist_name_handler(req: any, res: any) {
+async function persis_ticket_handler(req: any, res: any) {
+  let dbselected:string = req.body.sgdb == 'PG'? 'PostgreeSQL': req.body.sgdb == 'MG'? 'MongoDB': 'MariaDB';
+  insertLog.info(`${dbselected} selected`)
   let type = req.body.type;
   let description = req.body.description;
   let sgdb = req.body.sgdb;
@@ -56,13 +60,16 @@ async function persist_name_handler(req: any, res: any) {
   await axios
     .get(url)
     .then((response: AxiosResponse) => {
+      if (description === "") {
+        response.data = "Description cannot be empty";
+      }
       res.render("response.ejs", { service_response: response.data });
       // Handle successful response
       console.log("Response status:", response.status);
       console.log("Response data:", response.data);
       console.log(type);
       console.log(description);
-      console.log(sgdb);
+      console.log(sgdb);      
     })
     .catch((error: AxiosError) => {
       // Handle error
@@ -84,6 +91,7 @@ async function persist_name_handler(req: any, res: any) {
 /* Tratador para inicializar a aplicação (escutar as requisições)*/
 function listenHandler() {
   console.log(`Escutando na porta ${port}!`);
+  insertLog.info("Client App Started");
 }
 
 export {};

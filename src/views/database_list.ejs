@@ -1,0 +1,9 @@
+<%# The line bellow loads the entire contens of header.ejs%>
+<%-include('base_header') -%>
+
+<p> postgre_database: <%=service_response %> </p>
+<p> mongodb_database: <%=service_response %> </p>
+<p> mariadb_database: <%=service_response %> </p>
+
+<%# Includes the entire contents of footer.ejs %>
+<%- include('base_footer') -%>
