@@ -8,7 +8,6 @@ const app = express();
 const port = 5000;
 
 /* Basic service endpoints: */
-const capitalization_service_endpoint: string = 'http://localhost:5001/capitalize';
 const persistence_service_endpoint: string = 'http://localhost:5002/persistOur';
 
 /* Configuração para leitura de parâmetros em requisição do tipo post em form */
@@ -19,8 +18,6 @@ app.use(cors({
     credentials: true
 })); 
 
-
-let capitalization_service_target: string = capitalization_service_endpoint;
 
 // Define a proxy middleware for '/capitalization' 
 // and persistence requests
